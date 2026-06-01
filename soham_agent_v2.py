@@ -38,7 +38,7 @@ _BASE = {
 # State across ticks (module-level globals persist within subprocess)
 _last_rebalance_tick = -10**9
 _tick_count = 0
-REBALANCE_EVERY_TICKS = 273  # monthly at 30-min ticks
+REBALANCE_EVERY_TICKS = 130  # ~weekly at 30-min ticks
 
 
 def _sma(values: list[float], n: int) -> float | None:
@@ -47,30 +47,20 @@ def _sma(values: list[float], n: int) -> float | None:
     return mean(values[-n:])
 
 
-def _annualized_vol_from_bars(bars: list[dict], n_minutes: int = 20 * 390) -> float | None:
-    """Annualized realized vol from minute-bar returns. n_minutes = ~20 trading days."""
-    if len(bars) < 30:
-        return None
-    closes = [float(b["close"]) for b in bars[-n_minutes:]]
-    if len(closes) < 30:
-        return None
-    rets = [(closes[i] / closes[i-1] - 1) for i in range(1, len(closes))]
-    if len(rets) < 30:
-        return None
-    s = stdev(rets)
-    # rets are per-bar; bars are minute; ~390/day; ~252 trading days/yr
-    return s * (390 * 252) ** 0.5
+def _closes(bars: list[dict]) -> list[float]:
+    """Phase A delivers DAILY bars — closes come straight off them."""
+    return [float(b["close"]) for b in bars] if bars else []
 
 
-def _daily_closes_from_minute_bars(bars: list[dict]) -> list[float]:
-    """Sample 1 close per ~390 bars (one trading day). Coarse but cheap."""
-    if not bars:
-        return []
-    step = 390
-    sampled = [float(b["close"]) for b in bars[::step]]
-    if bars and (len(bars) % step != 0):
-        sampled.append(float(bars[-1]["close"]))
-    return sampled
+def _annualized_vol(bars: list[dict], days: int = 20) -> float | None:
+    """Annualized realized vol from DAILY returns over the last `days`."""
+    closes = _closes(bars)[-(days + 1):]
+    if len(closes) < 10:
+        return None
+    rets = [closes[i] / closes[i - 1] - 1 for i in range(1, len(closes)) if closes[i - 1] > 0]
+    if len(rets) < 5:
+        return None
+    return stdev(rets) * (252 ** 0.5)
 
 
 def _compute_target_weights(market_state: dict) -> dict[str, float]:
@@ -78,10 +68,10 @@ def _compute_target_weights(market_state: dict) -> dict[str, float]:
     weights = dict(_BASE)
 
     qqq_bars = market_state.get("QQQ") or []
-    qqq_daily = _daily_closes_from_minute_bars(qqq_bars)
+    qqq_daily = _closes(qqq_bars)
     sma20 = _sma(qqq_daily, 20)
     sma50 = _sma(qqq_daily, 50)
-    vol_annual = _annualized_vol_from_bars(qqq_bars)
+    vol_annual = _annualized_vol(qqq_bars)
 
     # Filter 1: trend (QQQ 20-day SMA > 50-day SMA)
     trend_ok = sma20 is not None and sma50 is not None and sma20 > sma50
