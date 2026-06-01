@@ -14,7 +14,7 @@ Fork this repo, implement `decide()` in `agent.py`, then send us the repo — **
 2. **Implement `decide()`** in `agent.py` — or just rename `baseline.py` to `agent.py` for a 5-minute first submission that gets admitted. The full contract is in the docstring + the [&laquo;The contract&raquo;](#the-contract) section below. `baseline.py`, `example_sector_rotation.py`, and `ai_momentum.py` are real reference bots you can read, run, and beat.
 3. **See it clear admission — locally, in ~10 seconds:** run **`python preview.py`**. No engine, no network, no keys, no install. It runs your bot across three real public market windows and prints the same shape of report the real admission email gives you, plus a PASS/FAIL on the safety bar admission actually gates on (clean run, leverage cap, concentration cap, no blow-up). If it says you clear the bar, you're very likely to be admitted.
 4. **Push to a GitHub repo** — public, or private with a read-only deploy key (your call; [«Submission»](#submission) explains the trade-offs).
-5. **Email the repo URL** to `submit@builderr.ai` (see [&laquo;Submission&raquo;](#submission)). We run admission on our infrastructure within 24h and email you the score. You can resubmit and iterate anytime before your cohort locks — your first try is not your last.
+5. **Email the repo URL** to `submit@builderr.ai` (see [&laquo;Submission&raquo;](#submission)). We run admission and email you the score the same day (usually within a few hours). You can resubmit and iterate anytime before your cohort locks — your first try is not your last.
 
 > **`preview.py` vs `selfcheck.py`:** `preview.py` is the one to run — it shows you clearing admission with real numbers. `selfcheck.py` is an even-quicker, data-free smoke test (synthetic bars, just checks `decide()` returns well-formed orders and doesn't crash). Neither is the official eval — we run admission centrally on hidden regimes so it's identical for everyone — but a clean `preview.py` is a strong predictor of admission.
 >
@@ -136,7 +136,7 @@ Top finishers are re-run on **fresh windows (calm + stress) they've never seen**
 
 ## Submission
 
-You don't have to make your code public. Pick the path you're comfortable with — same competition, same scoring, regardless. All three: email the link to **submit@builderr.ai** (subject: `builderr submission — <your name>`); we run admission within 24h and email your robustness profile; if admitted you're in the live round (Round 1: June 2 – July 2).
+You don't have to make your code public. Pick the path you're comfortable with — same competition, same scoring, regardless. All three: email the link to **submit@builderr.ai** (subject: `builderr submission — <your name>`); we run admission and email your robustness profile the same day (usually within a few hours); if admitted you're in the live round (Round 1: June 2 – July 2).
 
 **1. Public repo** *(simplest)*
 Push to a public GitHub repo, email the URL. Zero access setup and you get a public proof-of-work piece — but the field can read your strategy while the contest runs, and a public repo is the easiest place to leak a key. Good if you don't mind being open (or you'll open it after the contest anyway).
