@@ -52,7 +52,7 @@ VIX_TICKER   = "VIX"                       # fear gauge for panic exit
 # ── Hyperparameters (±20% stress-tested — kept intentionally simple) ────────
 
 TREND_WINDOW    = 50      # SPY SMA window: if SPY < SMA(50) → risk-off
-VIX_PANIC_LEVEL = 30      # VIX threshold: if VIX > 30 → panic exit to cash
+VIX_PANIC_LEVEL = 25      # VIX threshold: if VIX > 30 → panic exit to cash
                           #   30 is a well-established "fear spike" level;
                           #   historically coincides with sharp sell-offs.
 MOM_LONG        = 63      # ~3-month momentum lookback (trading days)
