@@ -10,8 +10,7 @@ from typing import Any
 TICKER = "SPY"
 SHORT_WINDOW = 10
 LONG_WINDOW = 50
-MAX_POSITION_WEIGHT = 0.95  # keep a small cash buffer, never fully max out
-
+MAX_POSITION_WEIGHT = 0.25  # stay well under their 30% concentration cap
 
 def _closes(bars: list[dict]) -> list[float]:
     """Extract closing prices from a list of bar dicts."""
